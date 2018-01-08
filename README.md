@@ -1,13 +1,20 @@
 # Apricot
+[![Build Status](https://travis-ci.org/sketchdev/apricot.svg?branch=master)](https://travis-ci.org/sketchdev/apricot)
+
 A cross platform, cross language migration tool.
 
 ## Installation
 
-TBA
+```sh
+> sudo apt-get install apricot
+```
 
 ## Usage
 
-TBA
+```sh
+> apricot init
+> apricot up
+```
 
 ## How it works
 
@@ -26,6 +33,9 @@ TBA
 
 **Much more...** Bash completion, secure, placeholders, etc.
 
+## How to contribute
+
+TBA
 
 ## License
 
