@@ -1,7 +1,7 @@
 # Apricot
 [![Build Status](https://travis-ci.org/sketchdev/apricot.svg?branch=master)](https://travis-ci.org/sketchdev/apricot)
 
-A cross platform, cross language migration tool.
+A cross platform, cross language database migration tool.
 
 ## Installation
 
