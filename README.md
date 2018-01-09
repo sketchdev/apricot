@@ -3,6 +3,20 @@
 
 A cross platform, cross language database migration tool.
 
+---
+
+**Simple** Setup with `apricot init`, then `apricot up` to migrate
+ 
+**Cross Platform** Compatible with macOS, Linux, and Windows
+
+**Language Agnostic** Use the same migration tool across all your projects. 
+
+**Many Database Engines** Works with Postgres, MySQL, and more...
+
+**Much more...** Bash completion, secure, placeholders, etc.
+
+---
+
 ## Installation
 
 ```sh
@@ -19,19 +33,6 @@ A cross platform, cross language database migration tool.
 ## How it works
 
 TBA
-
-
-## Features
-
-**Simple** Setup with `apricot init`, then `apricot up` to migrate
- 
-**Cross Platform** Compatible with macOS, Linux, and Windows
-
-**Language Agnostic** Use the same migration tool across all your projects. 
-
-**Many Database Engines** Works with Postgres, MySQL, and more...
-
-**Much more...** Bash completion, secure, placeholders, etc.
 
 ## How to contribute
 
