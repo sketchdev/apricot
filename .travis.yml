@@ -1,5 +1,17 @@
 language: go
 
+os:
+  - linux
+  - osx
+
 go:
   - 1.9.x
   - master
+
+services:
+  - postgresql
+  - mysql
+
+before_install:
+  - psql -c 'create database apricot;' -U postgres
+  - mysql -e 'create database apricot;'
