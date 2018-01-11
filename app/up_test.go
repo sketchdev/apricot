@@ -1,6 +1,7 @@
 package app
 
 import (
+	"path"
 	"testing"
 
 	_ "github.com/lib/pq"
@@ -18,13 +19,23 @@ func TestUp(t *testing.T) {
 
 func testUp(engine string) func(t *testing.T) {
 	return func(t *testing.T) {
+		// setup
 		conn := openConnection(engine, t)
 		defer conn.Close()
-		cleanTable(conn, t)
+		// clean
+		dropTable("authors", conn, t)
+		dropTable(db.SchemaTableName, conn, t)
+		// run
 		apricot := buildApricot(engine, t)
-		apricot.RunUp()
+		if err := apricot.RunUp(); err != nil {
+			t.Fatal(err)
+		}
+		// assert
 		t.Run("ShouldCreateSchemaTable", assertTableExists(conn, db.SchemaTableName))
-		//t.Run("ShouldCreateAuthors", assertTableExists(conn, "authors"))
+		t.Run("ShouldCreateAuthors", assertTableExists(conn, "authors"))
+		// TODO: assert the migration records
+		//t.Run("ShouldCreateMigrationRecord1", assertTableExists(conn, "authors"))
+		//t.Run("ShouldCreateMigrationRecord2", assertTableExists(conn, "authors"))
 	}
 }
 
@@ -38,7 +49,9 @@ func assertTableExists(conn db.DatabaseManager, name string) func(t *testing.T) 
 
 func buildApricot(engine string, t *testing.T) Apricot {
 	t.Helper()
-	apricot, err := NewApricotFromConfiguration(lib.NewConfiguration(engine))
+	configuration := lib.NewConfiguration(engine)
+	configuration.Migrations = []string{path.Join("..", "testdata", engine, "release1")}
+	apricot, err := NewApricotFromConfiguration(configuration)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -58,9 +71,9 @@ func openConnection(engine string, t *testing.T) db.DatabaseManager {
 	return conn
 }
 
-func cleanTable(conn db.DatabaseManager, t *testing.T) {
+func dropTable(name string, conn db.DatabaseManager, t *testing.T) {
 	t.Helper()
-	if err := conn.DropTable(db.SchemaTableName); err != nil {
+	if err := conn.DropTable(name); err != nil {
 		t.Fatal(err)
 	}
 }
