@@ -1,6 +1,7 @@
 # Apricot
 
 [![Build Status](https://travis-ci.org/sketchdev/apricot.svg?branch=master)](https://travis-ci.org/sketchdev/apricot)
+[![codecov](https://codecov.io/gh/sketchdev/apricot/branch/master/graph/badge.svg)](https://codecov.io/gh/sketchdev/apricot)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sketchdev/apricot)](https://goreportcard.com/report/github.com/sketchdev/apricot)
 
 A cross platform, cross language database migration tool.
