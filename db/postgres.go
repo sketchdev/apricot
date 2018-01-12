@@ -86,7 +86,7 @@ func (p postgres) TableExists(name string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	row := p.db.QueryRow("select to_regclass($1)", name)
+	row := p.db.QueryRow("select exists(select 1 from pg_tables where tablename = $1);", name)
 	var tableName sql.NullString
 	err = row.Scan(&tableName)
 	if err != nil {
