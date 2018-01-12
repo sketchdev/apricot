@@ -21,7 +21,10 @@ func (p postgres) connectionString() string {
 	return "user=postgres dbname=apricot sslmode=disable" // TODO: read from config file
 }
 
-func (p *postgres) Connect() error {
+func (p *postgres) connect() error {
+	if p.db != nil {
+		return nil
+	}
 	db, err := sql.Open("postgres", p.connectionString())
 	if err != nil {
 		return err
@@ -34,10 +37,16 @@ func (p *postgres) Connect() error {
 }
 
 func (p postgres) Close() {
-	p.db.Close()
+	if p.db != nil {
+		p.db.Close()
+	}
 }
 
 func (p postgres) CreateSchemaTable() error {
+	err := p.connect()
+	if err != nil {
+		return err
+	}
 	stmt := fmt.Sprintf(`
 		create table %s (
 			id serial primary key not null,
@@ -56,19 +65,15 @@ func (p postgres) CreateSchemaTable() error {
 	return nil
 }
 
-func (p postgres) DropSchemaTable() error {
-	return p.DropTable(SchemaTableName)
-}
-
-func (p postgres) SchemaTableExists() bool {
-	return p.TableExists(SchemaTableName)
-}
-
-func (p *postgres) SchemaTableMissing() bool {
+func (p *postgres) SchemaTableMissing() (bool, error) {
 	return p.TableMissing(SchemaTableName)
 }
 
 func (p postgres) DropTable(name string) error {
+	err := p.connect()
+	if err != nil {
+		return err
+	}
 	stmt := fmt.Sprintf("drop table if exists %s", name)
 	if _, err := p.db.Exec(stmt); err != nil {
 		return err
@@ -76,24 +81,36 @@ func (p postgres) DropTable(name string) error {
 	return nil
 }
 
-func (p postgres) TableExists(name string) bool {
-	stmt := fmt.Sprintf("select count(id) as row_count from %s", name)
-	row := p.db.QueryRow(stmt)
-	var rowCount int
-	if err := row.Scan(&rowCount); err != nil {
-		return false
+func (p postgres) TableExists(name string) (bool, error) {
+	err := p.connect()
+	if err != nil {
+		return false, err
 	}
-	return true
+	row := p.db.QueryRow("select to_regclass($1)", name)
+	var tableName sql.NullString
+	err = row.Scan(&tableName)
+	if err != nil {
+		return false, err
+	}
+	return tableName.Valid, nil
 }
 
-func (p postgres) TableMissing(name string) bool {
-	return !p.TableExists(name)
+func (p postgres) TableMissing(name string) (bool, error) {
+	exists, err := p.TableExists(name)
+	if err != nil {
+		return true, err
+	}
+	return !exists, nil
 }
 
 func (p postgres) AnyNonSuccessfulMigrations() (bool, error) {
+	err := p.connect()
+	if err != nil {
+		return false, err
+	}
 	row := p.db.QueryRow(fmt.Sprintf("select count(id) as row_count from %s where state != 'success'", SchemaTableName))
 	var rowCount int
-	err := row.Scan(&rowCount)
+	err = row.Scan(&rowCount)
 	if err != nil {
 		return rowCount > 0, err
 	}
@@ -101,9 +118,13 @@ func (p postgres) AnyNonSuccessfulMigrations() (bool, error) {
 }
 
 func (p postgres) MigrationMissing(version string) (bool, error) {
+	err := p.connect()
+	if err != nil {
+		return false, err
+	}
 	row := p.db.QueryRow(fmt.Sprintf("select count(id) as row_count from %s where version = $1", SchemaTableName), version)
 	var rowCount int
-	err := row.Scan(&rowCount)
+	err = row.Scan(&rowCount)
 	if err != nil {
 		return rowCount == 0, err
 	}
@@ -111,6 +132,10 @@ func (p postgres) MigrationMissing(version string) (bool, error) {
 }
 
 func (p postgres) StartMigration(version string, description string, filename string) (int, error) {
+	err := p.connect()
+	if err != nil {
+		return 0, err
+	}
 	tx, err := p.db.Begin()
 	if err != nil {
 		return 0, err
@@ -127,6 +152,10 @@ func (p postgres) StartMigration(version string, description string, filename st
 }
 
 func (p postgres) ApplyMigration(contents string) error {
+	err := p.connect()
+	if err != nil {
+		return err
+	}
 	tx, err := p.db.Begin()
 	if err != nil {
 		return err
@@ -141,6 +170,10 @@ func (p postgres) ApplyMigration(contents string) error {
 }
 
 func (p postgres) RollbackMigration(id int) error {
+	err := p.connect()
+	if err != nil {
+		return err
+	}
 	tx, err := p.db.Begin()
 	if err != nil {
 		return err
@@ -155,6 +188,10 @@ func (p postgres) RollbackMigration(id int) error {
 }
 
 func (p postgres) EndMigration(id int, duration time.Duration) error {
+	err := p.connect()
+	if err != nil {
+		return err
+	}
 	tx, err := p.db.Begin()
 	if err != nil {
 		return err

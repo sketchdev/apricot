@@ -11,15 +11,12 @@ const SchemaTableName = "apricot_migrations"
 // DatabaseManager is the interface implemented by each specific database
 type DatabaseManager interface {
 	Username() string
-	Connect() error
 	Close()
 	CreateSchemaTable() error
-	DropSchemaTable() error
-	SchemaTableExists() bool
-	SchemaTableMissing() bool
+	SchemaTableMissing() (bool, error)
 	DropTable(string) error
-	TableExists(string) bool
-	TableMissing(string) bool
+	TableExists(string) (bool, error)
+	TableMissing(string) (bool, error)
 	AnyNonSuccessfulMigrations() (bool, error)
 	MigrationMissing(version string) (bool, error)
 	StartMigration(version string, description string, filename string) (int, error)
