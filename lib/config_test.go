@@ -8,7 +8,8 @@ import (
 
 func TestNewConfiguration(t *testing.T) {
 	type args struct {
-		engine string
+		engine  string
+		connStr string
 	}
 	tests := []struct {
 		name string
@@ -19,7 +20,7 @@ func TestNewConfiguration(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewConfiguration(tt.args.engine); !reflect.DeepEqual(got, tt.want) {
+			if got := NewConfiguration(tt.args.engine, tt.args.connStr); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewConfiguration() = %v, want %v", got, tt.want)
 			}
 		})
@@ -37,7 +38,7 @@ func TestNewConfigurationFromFile(t *testing.T) {
 		wantErr bool
 	}{
 		{"BadFile", args{name: "badfile"}, Configuration{}, true},
-		{"GoodFile", args{name: path.Join("..", "testdata", "postgres", "apricot.toml")}, Configuration{Engine: "postgres", Folders: []string{"testdata/postgres/current", "testdata/postgres/release1"}}, false},
+		{"GoodFile", args{name: path.Join("..", "testdata", "postgres", "apricot.toml")}, Configuration{Engine: "postgres", Folders: []string{"testdata/postgres/current", "testdata/postgres/release1"}, ConnectionFile: path.Join("..", "testdata", "postgres", "test.conn")}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

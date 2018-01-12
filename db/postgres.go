@@ -16,7 +16,7 @@ type postgres struct {
 }
 
 func (p postgres) Username() string {
-	return "postgres"
+	return "postgres" // TODO: read this from the connection string somehow
 }
 
 func (p *postgres) connect() error {
