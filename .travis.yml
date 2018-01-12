@@ -14,9 +14,11 @@ services:
 before_install:
   - psql -c 'create database apricot;' -U postgres
   - mysql -e 'create database apricot;'
+  - go get github.com/mattn/goveralls
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - $GOPATH/bin/goveralls -service=travis-ci
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
