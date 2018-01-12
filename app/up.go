@@ -33,6 +33,8 @@ func (a Apricot) RunUp() error {
 			return err
 		}
 		steps.Success()
+	} else {
+		steps.Done()
 	}
 
 	// look to see if any rows are not successful

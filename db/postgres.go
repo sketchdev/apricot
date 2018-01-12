@@ -87,12 +87,12 @@ func (p postgres) TableExists(name string) (bool, error) {
 		return false, err
 	}
 	row := p.db.QueryRow("select exists(select 1 from pg_tables where tablename = $1);", name)
-	var tableName sql.NullString
-	err = row.Scan(&tableName)
+	var exists bool
+	err = row.Scan(&exists)
 	if err != nil {
 		return false, err
 	}
-	return tableName.Valid, nil
+	return exists, nil
 }
 
 func (p postgres) TableMissing(name string) (bool, error) {
