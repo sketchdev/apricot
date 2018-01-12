@@ -1,0 +1,2 @@
+engine = "postgres"
+migrations = "testdata/postgres/current", "testdata/postgres/release1"]
