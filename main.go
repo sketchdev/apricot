@@ -20,13 +20,13 @@ func main() {
 	switch kingpin.MustParse(rootCmd.Parse(os.Args[1:])) {
 	case initCmd.FullCommand():
 		if err := RunInitialize(); err != nil {
-			fmt.Errorf("error: %s", err)
+			fmt.Printf("An error occurred while migrating: %s", err)
 		} else {
 			fmt.Println("Initialization complete.")
 		}
 	case upCmd.FullCommand():
 		if apricot, err := app.NewApricotFromConfigurationFile("apricot.toml"); err != nil {
-			fmt.Errorf("error: %s", err)
+			fmt.Printf("An error occurred while migrating: %s", err)
 		} else {
 			if err := apricot.RunUp(); err != nil {
 				fmt.Printf("An error occurred while migrating: \n%s\n", err)
