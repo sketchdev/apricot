@@ -29,7 +29,7 @@ func main() {
 			fmt.Errorf("error: %s", err)
 		} else {
 			if err := apricot.RunUp(); err != nil {
-				fmt.Errorf("error: %s", err)
+				fmt.Printf("An error occurred while migrating: \n%s\n", err)
 			} else {
 				fmt.Println("Migration complete.")
 			}
