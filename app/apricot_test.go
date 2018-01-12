@@ -13,8 +13,8 @@ func TestNewApricotFromConfigurationFile(t *testing.T) {
 	type args struct {
 		name string
 	}
-	postgres, _ := db.NewManagerFromEngine("postgres")
-	postgresConfig := lib.Configuration{Engine: "postgres", Migrations: []string{path.Join("testdata", "postgres", "current"), path.Join("testdata", "postgres", "release1")}}
+	postgres, _ := db.NewManagerFromEngine("postgres", "pg://postgres@localhost/apricot?sslmode=disable")
+	postgresConfig := lib.Configuration{Engine: "postgres", Folders: []string{path.Join("testdata", "postgres", "current"), path.Join("testdata", "postgres", "release1")}, ConnectionFile: path.Join("..", "testdata", "postgres", "test.conn")}
 	tests := []struct {
 		name    string
 		args    args
@@ -42,8 +42,8 @@ func TestNewApricotFromConfiguration(t *testing.T) {
 	type args struct {
 		configuration lib.Configuration
 	}
-	postgres, _ := db.NewManagerFromEngine("postgres")
-	postgresConfig := lib.NewConfiguration("postgres")
+	postgres, _ := db.NewManagerFromEngine("postgres", "pg://postgres@localhost/apricot?sslmode=disable")
+	postgresConfig := lib.NewConfiguration("postgres", path.Join("..", "testdata", "postgres", "test.conn"))
 	badConfig := lib.Configuration{Engine: "invalid"}
 	tests := []struct {
 		name    string

@@ -1,0 +1,1 @@
+pg://postgres@localhost/apricot?sslmode=disable

@@ -26,10 +26,10 @@ type DatabaseManager interface {
 }
 
 // NewManagerFromEngine is a factory method to produce DatabaseManager types by a database engine name
-func NewManagerFromEngine(name string) (DatabaseManager, error) {
+func NewManagerFromEngine(name, connectionString string) (DatabaseManager, error) {
 	switch name {
 	case "postgres":
-		return &postgres{}, nil
+		return &postgres{connectionString: connectionString}, nil
 	}
 	return nil, errors.New("invalid database engine")
 }

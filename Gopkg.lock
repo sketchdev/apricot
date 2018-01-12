@@ -51,6 +51,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/xo/dburl"
+  packages = ["."]
+  revision = "2406b5c3c3d0d9ed027c66db23ff3f271c370c69"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "810d7000345868fc619eb81f46307107118f4ae1"
@@ -64,6 +70,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9d1ec72d16adf29f6f74e8cdb033d4e5d1353b240f79c3debfa643f01d4d02a9"
+  inputs-digest = "5d3d5b1f837edcb79dbddd3ea8331c833fba2c83f79f513b0b27e32c25c6dba6"
   solver-name = "gps-cdcl"
   solver-version = 1

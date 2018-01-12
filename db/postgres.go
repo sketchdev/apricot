@@ -7,25 +7,23 @@ import (
 
 	// used to import the postgres database driver
 	_ "github.com/lib/pq"
+	"github.com/xo/dburl"
 )
 
 type postgres struct {
-	db *sql.DB
+	connectionString string
+	db               *sql.DB
 }
 
 func (p postgres) Username() string {
 	return "postgres"
 }
 
-func (p postgres) connectionString() string {
-	return "user=postgres dbname=apricot sslmode=disable" // TODO: read from config file
-}
-
 func (p *postgres) connect() error {
 	if p.db != nil {
 		return nil
 	}
-	db, err := sql.Open("postgres", p.connectionString())
+	db, err := dburl.Open(p.connectionString)
 	if err != nil {
 		return err
 	}

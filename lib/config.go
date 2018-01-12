@@ -1,6 +1,7 @@
 package lib
 
 import (
+	"io/ioutil"
 	"path"
 
 	"github.com/BurntSushi/toml"
@@ -8,16 +9,22 @@ import (
 
 // Configuration is a holder for various configuration data
 type Configuration struct {
-	Engine     string
-	Migrations []string
+	Engine         string
+	Folders        []string
+	ConnectionFile string
+}
+
+func (c Configuration) ConnectionString() (string, error) {
+	data, err := ioutil.ReadFile(c.ConnectionFile)
+	if err != nil {
+		return "", err
+	}
+	return string(data), nil
 }
 
 // NewConfiguration builds a default configuration
-func NewConfiguration(engine string) Configuration {
-	config := Configuration{}
-	config.Engine = engine
-	config.Migrations = []string{path.Join("migrations", "current")}
-	return config
+func NewConfiguration(engine, connectionFile string) Configuration {
+	return Configuration{engine, []string{path.Join("migrations", "current")}, connectionFile}
 }
 
 // NewConfigurationFromFile parses a Toml file to build a Configuration

@@ -9,22 +9,22 @@ import (
 	"github.com/sketchdev/apricot/lib"
 )
 
-var engines = []string{"postgres"}
+var engines = map[string]string{"postgres": "pg://postgres@localhost/apricot?sslmode=disable"}
 
 func TestApricot_RunUp(t *testing.T) {
-	for _, engine := range engines {
-		t.Run(engine, testApricotRunUp(engine))
+	for engine, connStr := range engines {
+		t.Run(engine, testApricotRunUp(engine, connStr))
 	}
 }
 
-func testApricotRunUp(engine string) func(t *testing.T) {
+func testApricotRunUp(engine, connStr string) func(t *testing.T) {
 	return func(t *testing.T) {
 		type fields struct {
 			DatabaseManager       db.DatabaseManager
 			Configuration         lib.Configuration
 			TablesToDropAndAssert []string
 		}
-		databaseManager, _ := db.NewManagerFromEngine(engine)
+		databaseManager, _ := db.NewManagerFromEngine(engine, connStr)
 		tests := []struct {
 			name    string
 			fields  fields
@@ -75,13 +75,13 @@ func testApricotRunUp(engine string) func(t *testing.T) {
 }
 
 func goodConfiguration(engine string) lib.Configuration {
-	configuration := lib.NewConfiguration(engine)
-	configuration.Migrations = []string{path.Join("..", "testdata", engine, "current"), path.Join("..", "testdata", engine, "release1")}
+	configuration := lib.NewConfiguration(engine, path.Join("..", "testdata", engine, "test.conn"))
+	configuration.Folders = []string{path.Join("..", "testdata", engine, "current"), path.Join("..", "testdata", engine, "release1")}
 	return configuration
 }
 
 func configurationWithBadFolder(engine string) lib.Configuration {
-	configuration := lib.NewConfiguration(engine)
-	configuration.Migrations = []string{path.Join("..", "testdata", engine, "current"), path.Join("..", "testdata", engine, "baddir")}
+	configuration := goodConfiguration(engine)
+	configuration.Folders = []string{path.Join("..", "testdata", engine, "current"), path.Join("..", "testdata", engine, "baddir")}
 	return configuration
 }

@@ -22,7 +22,11 @@ func NewApricotFromConfigurationFile(name string) (Apricot, error) {
 
 // NewApricotFromConfiguration returns a new Apricot based on the configuration provided
 func NewApricotFromConfiguration(configuration lib.Configuration) (Apricot, error) {
-	databaseManager, err := db.NewManagerFromEngine(configuration.Engine)
+	connStr, err := configuration.ConnectionString()
+	if err != nil {
+		return Apricot{}, err
+	}
+	databaseManager, err := db.NewManagerFromEngine(configuration.Engine, connStr)
 	if err != nil {
 		return Apricot{}, err
 	}

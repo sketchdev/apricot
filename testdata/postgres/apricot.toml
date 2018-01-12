@@ -1,2 +1,3 @@
 engine = "postgres"
-migrations = ["testdata/postgres/current", "testdata/postgres/release1"]
+folders = ["testdata/postgres/current", "testdata/postgres/release1"]
+connectionFile = "../testdata/postgres/test.conn"

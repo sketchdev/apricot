@@ -52,7 +52,7 @@ func (a Apricot) RunUp() error {
 
 	// gather migration files
 	steps.Start("Gathering migration files")
-	files, err := lib.GatherFiles(a.Configuration.Migrations, []string{lib.UpSuffix, lib.AlwaysSuffix})
+	files, err := lib.GatherFiles(a.Configuration.Folders, []string{lib.UpSuffix, lib.AlwaysSuffix})
 	if err != nil {
 		steps.Error()
 		return err

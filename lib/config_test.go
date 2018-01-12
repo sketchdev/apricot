@@ -15,7 +15,7 @@ func TestNewConfiguration(t *testing.T) {
 		args args
 		want Configuration
 	}{
-		{"WithEngine", args{engine: "postgres"}, Configuration{Engine: "postgres", Migrations: []string{path.Join("migrations", "current")}}},
+		{"WithEngine", args{engine: "postgres"}, Configuration{Engine: "postgres", Folders: []string{path.Join("migrations", "current")}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -37,7 +37,7 @@ func TestNewConfigurationFromFile(t *testing.T) {
 		wantErr bool
 	}{
 		{"BadFile", args{name: "badfile"}, Configuration{}, true},
-		{"GoodFile", args{name: path.Join("..", "testdata", "postgres", "apricot.toml")}, Configuration{Engine: "postgres", Migrations: []string{"testdata/postgres/current", "testdata/postgres/release1"}}, false},
+		{"GoodFile", args{name: path.Join("..", "testdata", "postgres", "apricot.toml")}, Configuration{Engine: "postgres", Folders: []string{"testdata/postgres/current", "testdata/postgres/release1"}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
